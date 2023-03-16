@@ -1,9 +1,9 @@
 from selenium.webdriver.common.by import By
 from config.config import login_cookie_value, login_cookie_name
-from entiites.helpers import wait_for_element
+from entiites.helpers import wait_for_element, gen_email, gen_password
 from pages.home_page import HomePage
 from pages.landing_page import LandingPage
-from tests.base_test import BaseTest
+from entiites.base_test import BaseTest
 
 
 class TestMainPage(BaseTest):
@@ -44,8 +44,8 @@ class TestMainPage(BaseTest):
         landing_page.create_account()
         wait_for_element(self, "//*[text()='Sign up']")
 
-        landing_page.set_login("test@test.ru")
-        landing_page.set_password("38$9r8fn483ecd")
+        landing_page.set_login(gen_email())
+        landing_page.set_password(gen_password())
         landing_page.create_account_submit()
         alert = wait_for_element(self, landing_page.alert_class, By.CLASS_NAME)
 
@@ -55,18 +55,60 @@ class TestMainPage(BaseTest):
     def test_forgot_password(self):
         landing_page = LandingPage(self.driver)
         landing_page.open()
-
-        landing_page.set_login("test@test.ru")
+        email = gen_email()
+        landing_page.set_login(email)
         landing_page.forgot_password()
 
+        restore_pass_instructions = wait_for_element(self, landing_page.instructions_xpath).text
+
+        self.assertIn(email, restore_pass_instructions,
+                      "Корректно указан email")
+
     def test_login_no_password(self):
-        pass
+        landing_page = LandingPage(self.driver)
+        landing_page.open()
+        email = gen_email()
+        landing_page.set_login(email)
+        landing_page.submit()
+
+        alert = wait_for_element(self, landing_page.password_is_required_alert_xpath)
+
+        self.assertEqual(alert.text, "Password is required",
+                      "Ошибка при отсутствии пароля")
+
 
     def test_wrong_password(self):
-        pass
+        landing_page = LandingPage(self.driver)
+        landing_page.open()
+        landing_page.set_login(gen_email())
+        landing_page.set_password(gen_password())
+        landing_page.submit()
+        alert = wait_for_element(self, landing_page.alert_class, By.CLASS_NAME)
+
+        self.assertEqual(alert.text, "One or both of your email/password was incorrect",
+                         "Корректная ошибка авторизации")
 
     def test_no_email_on_forgot(self):
-        pass
+        landing_page = LandingPage(self.driver)
+        landing_page.open()
+        landing_page.forgot_password()
+        alert = wait_for_element(self, landing_page.email_is_required_alert_xpath)
 
-    def test_password_eye(self):
-        pass
+        self.assertEqual(alert.text, "Email is required",
+                      "Ошибка при отсутствии email")
+
+    def test_no_data_on_login(self):
+        landing_page = LandingPage(self.driver)
+        landing_page.open()
+        landing_page.submit()
+        alert_email = wait_for_element(self, landing_page.email_is_required_alert_xpath)
+        alert_password = wait_for_element(self, landing_page.password_is_required_alert_xpath)
+
+        self.assertEqual(alert_email.text, "Email is required",
+                      "Ошибка при отсутствии email")
+
+        self.assertEqual(alert_password.text, "Password is required",
+                      "Ошибка при отсутствии пароля")
+
+
+

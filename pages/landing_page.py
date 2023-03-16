@@ -12,11 +12,17 @@ class LandingPage(BasePage):
     forgot_password_button = (By.XPATH, "//*[text()='Forgot your password?']")
     create_account_button = (By.XPATH, "//*[text()='Create an account']")
     create_account_confirm = (By.XPATH, "//*[text()='Create account']")
-    sign_up_label = (By.XPATH, "Sign up")
+    sign_up_label = (By.XPATH, "//*[text()='Sign Up']")
     alert_message = (By.CLASS_NAME, "alert_message-error")
+    instructions_xpath = "//*[contains(text(),'Check your email')]"
+    instructions = (By.XPATH, instructions_xpath)
+    password_is_required_alert_xpath = "//*[text()='Password is required']"
+    password_is_required_alert = (By.XPATH, password_is_required_alert_xpath)
+    email_is_required_alert_xpath = "//*[text()='Email is required']"
+    email_is_required_alert = (By.XPATH, email_is_required_alert_xpath)
+
     support_text = "//*[text()='Get support']"
     alert_class = "alert_message-error"
-
 
     def set_login(self, login=user_login):
         email = self.driver.find_element(*self.email_input)
@@ -49,3 +55,10 @@ class LandingPage(BasePage):
     def alert_message_text(self):
         button = self.driver.find_element(*self.alert_message)
         button.text()
+
+    def restore_pass_instructions(self):
+        instructions = self.driver.find_element(*self.instructions)
+        instructions.text()
+
+
+
