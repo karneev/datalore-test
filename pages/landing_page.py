@@ -21,6 +21,12 @@ class LandingPage(BasePage):
     email_is_required_alert_xpath = "//*[text()='Email is required']"
     email_is_required_alert = (By.XPATH, email_is_required_alert_xpath)
 
+    landing_title_class = "landing__title"
+    landing_subtitle_class = "landing__subtitle"
+    landing_title = (By.CLASS_NAME, landing_title_class)
+    landing_subtitle = (By.CLASS_NAME, "landing__subtitle")
+    landing_link = (By.CLASS_NAME, "landing__link")
+
     support_text = "//*[text()='Get support']"
     alert_class = "alert_message-error"
 
@@ -60,5 +66,15 @@ class LandingPage(BasePage):
         instructions = self.driver.find_element(*self.instructions)
         instructions.text()
 
+    def get_landing_title(self):
+        title = self.driver.find_element(*self.landing_title)
+        return title.text()
+
+    def get_landing_subtitle(self):
+        subtitle = self.driver.find_element(*self.landing_title)
+        return subtitle.text()
+
+    def get_landing_links(self):
+        return self.driver.find_elements(*self.landing_link)
 
 

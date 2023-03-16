@@ -1,9 +1,12 @@
+from time import sleep
+
 from selenium.webdriver.common.by import By
 from config.config import login_cookie_value, login_cookie_name
 from entiites.helpers import wait_for_element, gen_email, gen_password
 from pages.home_page import HomePage
 from pages.landing_page import LandingPage
 from entiites.base_test import BaseTest
+from pages.loading_page import LoadingPage
 
 
 class TestMainPage(BaseTest):
@@ -14,6 +17,12 @@ class TestMainPage(BaseTest):
         landing_page.set_login()
         landing_page.set_password()
         landing_page.submit()
+
+        # Эта проверка на CI может быть хрупкой, если страница быстро прогрузится
+        loading_page = LoadingPage(self.driver)
+        wait_for_element(self, loading_page.title_class, By.CLASS_NAME).text
+        self.assertTrue(loading_page.logo(),
+                        "Есть лого на странице загрузки")
 
         home_page = HomePage(self.driver)
         home_page_title = wait_for_element(self, home_page.title_xpath).text
@@ -74,8 +83,7 @@ class TestMainPage(BaseTest):
         alert = wait_for_element(self, landing_page.password_is_required_alert_xpath)
 
         self.assertEqual(alert.text, "Password is required",
-                      "Ошибка при отсутствии пароля")
-
+                         "Ошибка при отсутствии пароля")
 
     def test_wrong_password(self):
         landing_page = LandingPage(self.driver)
@@ -95,7 +103,7 @@ class TestMainPage(BaseTest):
         alert = wait_for_element(self, landing_page.email_is_required_alert_xpath)
 
         self.assertEqual(alert.text, "Email is required",
-                      "Ошибка при отсутствии email")
+                         "Ошибка при отсутствии email")
 
     def test_no_data_on_login(self):
         landing_page = LandingPage(self.driver)
@@ -105,10 +113,7 @@ class TestMainPage(BaseTest):
         alert_password = wait_for_element(self, landing_page.password_is_required_alert_xpath)
 
         self.assertEqual(alert_email.text, "Email is required",
-                      "Ошибка при отсутствии email")
+                         "Ошибка при отсутствии email")
 
         self.assertEqual(alert_password.text, "Password is required",
-                      "Ошибка при отсутствии пароля")
-
-
-
+                         "Ошибка при отсутствии пароля")
