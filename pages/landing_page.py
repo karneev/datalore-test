@@ -1,8 +1,8 @@
 from selenium.webdriver.common.by import By
 
 from config.config import url, user_login, user_password
-from entiites.base_page import BasePage
-from entiites.helpers import wait_for_element
+from entities.base_page import BasePage
+from entities.helpers import wait_for_element
 
 
 class LandingPage(BasePage):
@@ -20,6 +20,7 @@ class LandingPage(BasePage):
     password_is_required_alert = (By.XPATH, password_is_required_alert_xpath)
     email_is_required_alert_xpath = "//*[text()='Email is required']"
     email_is_required_alert = (By.XPATH, email_is_required_alert_xpath)
+    weak_password_xpath = "//*[contains(text(),'Password strength')]"
 
     landing_title_class = "landing__title"
     landing_subtitle_class = "landing__subtitle"

@@ -2,10 +2,10 @@ from time import sleep
 
 from selenium.webdriver.common.by import By
 from config.config import login_cookie_value, login_cookie_name
-from entiites.helpers import wait_for_element, gen_email, gen_password
+from entities.helpers import wait_for_element, gen_email, gen_password, gen_weak_password
 from pages.home_page import HomePage
 from pages.landing_page import LandingPage
-from entiites.base_test import BaseTest
+from entities.base_test import BaseTest
 from pages.loading_page import LoadingPage
 
 
@@ -117,3 +117,15 @@ class TestMainPage(BaseTest):
 
         self.assertEqual(alert_password.text, "Password is required",
                          "Ошибка при отсутствии пароля")
+
+    def test_test_weak_password(self):
+        landing_page = LandingPage(self.driver)
+        landing_page.open()
+        landing_page.create_account()
+        landing_page.set_login(gen_email())
+        landing_page.set_password(gen_weak_password())
+        landing_page.create_account_submit()
+
+        alert = wait_for_element(self, landing_page.weak_password_xpath)
+        self.assertEqual(alert.text, "Password strength: Very weak -",
+                         "Ошибка слабого пароля")

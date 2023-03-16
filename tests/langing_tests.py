@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 
-from entiites.base_test import BaseTest
-from entiites.helpers import wait_for_element
+from entities.base_test import BaseTest
+from entities.helpers import wait_for_element
 from pages.landing_page import LandingPage
 
 
