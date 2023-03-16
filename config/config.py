@@ -1,3 +1,5 @@
 url = "https://k8s.stable.on-premise.datalore.io/"
 user_login = "mihail-karneev@mail.ru"
 user_password = "Jv@f35Nc1j"
+login_cookie_name = "DATALORESESSIONID"
+login_cookie_value = "M2E0MDc4NDgtYzFiNS00MzI5LWE3ZDItMmI0YjQzZjY3MTJj"
